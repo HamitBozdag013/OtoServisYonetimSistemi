@@ -1,0 +1,40 @@
+﻿@model IEnumerable<OtoServisYonetimSistemi.Entities.Servis.Musteri>
+@{
+    ViewBag.Title = "İş Emri İşlemi İçin Müşteri Seçiniz";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@using (Html.BeginForm())
+{
+    <div class="row">
+        <div class="col">
+            Müşteri Ara (Ad Soyad / Unvan / Telefon)
+            <input type="text" class="form-control" name="ara" />
+        </div>
+        <div class="col">
+            <br />
+            <input type="submit" class="btn btn-secondary" value="Ara" />
+        </div>
+    </div>
+}
+ </hr>
+<table class="table table-responsive mt-3">
+    <thead>
+    <th>Adı Soyadı / Unvan</th>
+    <th>Telefon</th>
+    <th>Eposta</th>
+    <th>Adres</th>
+    <th></th>
+    </thead>
+    @foreach (var musteri in Model)
+    {
+        <tr>
+            <td>@musteri.AdSoyad</td>
+            <td>@musteri.Telefon</td>
+            <td>@musteri.Eposta</td>
+            <td>@musteri.Adres</td>
+            <td>
+                @Html.ActionLink("İş Emri Oluştur", "IsEmriOlustur", new {musteriId=musteri.Id}, new {@class="btn btn-sm btn-success"})
+            </td>
+        </tr>
+    }
+</table>

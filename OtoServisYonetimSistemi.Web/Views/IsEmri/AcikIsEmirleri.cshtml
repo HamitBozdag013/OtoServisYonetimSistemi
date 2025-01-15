@@ -1,0 +1,35 @@
+﻿@model IEnumerable<OtoServisYonetimSistemi.Entities.Servis.IsEmri>
+@{
+    ViewBag.Title = "Açık İş Emirleri";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<table class="table table-sm table-responsive">
+    <thead>
+        <tr>
+            <td>Marka</td>
+            <td>Model</td>
+            <td>Plaka</td>
+            <td>Şase No</td>
+            <td>Müşteri</td>
+            <td>Telefon</td>
+            <td>Geliş Tarihi</td>
+            <td></td>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Model.Marka.MarkaAd</td>
+            <td>@item.Model.ModelAd</td>
+            <td>@item.Plaka</td>
+            <td>@item.SaseNo</td>
+            <td>@item.Musteri.AdSoyad</td>
+            <td>@item.Musteri.Telefon</td>
+            <td>@item.GelisTarihi.ToShortDateString()</td>
+            <td>
+                @Html.ActionLink("İşlem Yap", "IslemYap", "IsEmri", new {isEmriId=item.Id}, new {@class="btn btn-sm btn-secondary"})
+            </td>
+        </tr>
+    }
+</table>

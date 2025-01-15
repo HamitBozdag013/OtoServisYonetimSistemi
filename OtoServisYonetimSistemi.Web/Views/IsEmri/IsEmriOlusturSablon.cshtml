@@ -1,0 +1,79 @@
+﻿@model OtoServisYonetimSistemi.Entities.Servis.IsEmri
+@{
+    ViewBag.Title = "Şablondan İş Emri Oluştur";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col">
+        <h5 class="fw-bold bg-light">Araç Bilgileri</h5>
+        <table class="table table-responsive">
+            <tr>
+                <th>Plaka</th>
+                <td>@Model.Plaka</td>
+            </tr>
+            <tr>
+                <th>Şase No</th>
+                <td>@Model.SaseNo</td>
+            </tr>
+            <tr>
+                <th>Marka / Model</th>
+                <td>@Model.Model.Marka.MarkaAd / @Model.Model.ModelAd</td>
+            </tr>
+            <tr>
+                <th>Model Yıl</th>
+                <td>@Model.ModelYil</td>
+            </tr>
+            <tr>
+                <th>Yakıt Türü</th>
+                <td>@Model.YakitTuru</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col">
+        <h5 class="fw-bold bg-light">Müşteri Bilgileri</h5>
+        <table class="table table-responsive">
+            <tr>
+                <th>Adı Soyadı</th>
+                <td>@Model.Musteri.AdSoyad</td>
+            </tr>
+            <tr>
+                <th>Telefon</th>
+                <td>@Model.Musteri.Telefon</td>
+            </tr>
+            <tr>
+                <th>Eposta</th>
+                <td>@Model.Musteri.Eposta</td>
+            </tr>
+            <tr>
+                <th>Adres</th>
+                <td>@Model.Musteri.Adres</td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+@using (Html.BeginForm("IsEmriOlusturSablon", "IsEmri"))
+{
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <div class="row">
+        <div class="col-md-2">
+            <h6>Geliş Tarihi</h6>
+            <input type="date" name="GelisTarihi" class="form-control" required />
+        </div>
+        <div class="col-md-2">
+            <h6>Araç Km</h6>
+            <input type="number" name="AracKm" class="form-control" required />
+        </div>
+        <div class="col-md-6">
+            <h6>Geliş Sebebi</h6>
+            <input type="text" name="GelisSebebi" class="form-control" required />
+        </div>
+        <div class="col-md-2">
+            <h6></h6>
+            <br />
+            <input type="submit" value="Kaydet" class="btn btn-primary" />
+        </div>
+    </div>
+}
+

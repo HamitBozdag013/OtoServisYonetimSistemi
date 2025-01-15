@@ -1,0 +1,54 @@
+﻿@model IEnumerable<OtoServisYonetimSistemi.Entities.Web.Blog>
+@using System.Text.RegularExpressions;
+@{
+    ViewBag.Title = "Blog İşlemleri";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<div class="row">
+    <div class="col">
+        @Html.ActionLink("Yeni Blog Oluştur", "Create", null, new { @class = "btn btn-dark" })
+    </div>
+</div>
+
+<hr class="mt-4" />
+<div class="row">
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th style="width:20%">Blog Başlığı</th>
+                <th style="width:55%">Blog İçeriği</th>
+                <th style="width:10%">Tarih</th>
+                <th style="width:15%"></th>
+            </tr>
+        </thead>
+        @foreach (var blog in Model)
+        {
+            <tr>
+                <td>
+                    @blog.Baslik
+                </td>
+                <td>
+                    @{
+                        string kisaltma = Regex.Replace(blog.Icerik, "<.*?>", string.Empty);
+
+                        if (kisaltma.Length > 200)
+                        {
+                            kisaltma = kisaltma.Substring(0, 200) + "...";
+                        }
+                        @kisaltma
+                    }
+                </td>
+                <td>
+                    @blog.Tarih.ToShortDateString()
+                </td>
+                <td>
+                    @Html.ActionLink("Düzenle", "BlogDuzenle", new { id = blog.Id }, new { @class = "btn btn-secondary" })
+                    @Html.ActionLink("Sil", "BlogSil", new { id = blog.Id }, new { @class = "btn btn-danger" })
+                </td>
+            </tr>
+
+        }
+    </table>
+</div>

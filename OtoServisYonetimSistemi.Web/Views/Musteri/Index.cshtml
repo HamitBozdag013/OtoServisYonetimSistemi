@@ -1,0 +1,87 @@
+﻿@model IEnumerable<OtoServisYonetimSistemi.Entities.Servis.Musteri>
+
+@{
+    ViewBag.Title = "Müşteri Ekleme Sayfası";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<p>
+    @Html.ActionLink("Yeni Müşteri", "Create", null, new { @class = "btn btn-info" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Adı Soyadı / Unvan
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Telefon)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Eposta)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Adres)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var musteri in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => musteri.AdSoyad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => musteri.Telefon)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => musteri.Eposta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => musteri.Adres)
+            </td>
+            <td>
+                @Html.ActionLink("Düzenle", "MusteriDuzenle", new { id = musteri.Id }, new { @class = "btn btn-sm btn-secondary" })
+                <button type="button" onclick="silmodal(this)" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-id="@musteri.Id" data-adsoyad="@musteri.AdSoyad" data-bs-target="#silModal">
+                    Sil
+                </button>
+            </td>
+        </tr>
+    }
+</table>
+
+
+<!-- Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Müşteri Silme İşlemi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span id="_adsoyad"></span> müşterisini silmek istiyor musunuz?
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("MusteriSil", "Musteri"))
+                {
+                    <input type="hidden" id="hiddenId" name="id" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        function silmodal(btn) {
+            var id = $(btn).data('id');
+            var adsoyad = $(btn).data('adsoyad');
+            $('#hiddenId').val(id);
+            $('#_adsoyad').text(adsoyad);
+        }
+    </script>
+}

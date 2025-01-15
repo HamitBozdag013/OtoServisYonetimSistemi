@@ -1,0 +1,103 @@
+﻿@model OtoServisYonetimSistemi.Entities.Servis.IsEmri
+@using OtoServisYonetimSistemi.Entities.Servis
+@{
+    ViewBag.Title = "Detay";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col">
+        <h5 class="fw-bold bg-light">Araç Bilgileri</h5>
+        <table class="table table-responsive">
+            <tr>
+                <th>Plaka</th>
+                <td>@Model.Plaka</td>
+            </tr>
+            <tr>
+                <th>Şase No</th>
+                <td>@Model.SaseNo</td>
+            </tr>
+            <tr>
+                <th>Marka / Model</th>
+                <td>@Model.Model.Marka.MarkaAd / @Model.Model.ModelAd</td>
+            </tr>
+            <tr>
+                <th>Model Yıl</th>
+                <td>@Model.ModelYil</td>
+            </tr>
+            <tr>
+                <th>Yakıt Türü</th>
+                <td>@Model.YakitTuru</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col">
+        <h5 class="fw-bold bg-light">Müşteri Bilgileri</h5>
+        <table class="table table-responsive">
+            <tr>
+                <th>Adı Soyadı</th>
+                <td>@Model.Musteri.AdSoyad</td>
+            </tr>
+            <tr>
+                <th>Telefon</th>
+                <td>@Model.Musteri.Telefon</td>
+            </tr>
+            <tr>
+                <th>Eposta</th>
+                <td>@Model.Musteri.Eposta</td>
+            </tr>
+            <tr>
+                <th>Adres</th>
+                <td>@Model.Musteri.Adres</td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+@if (ViewBag.Islemler != null)
+{
+    <hr />
+    <h5 class="text-decoration-underline">YAPILAN İŞLEMLER</h5>
+
+    var islemler = (List<Islem>)ViewBag.Islemler;
+    <table class="table table-sm table-responsive mt-3 mb-3">
+        <thead>
+            <tr>
+                <th>İşlem Adı</th>
+                <th>Birim Fiyat</th>
+                <th>Adet</th>
+                <th>Ara Toplam</th>
+            </tr>
+        </thead>
+        @foreach (var islem in islemler)
+        {
+            <tr>
+                <td>@islem.IslemAdi</td>
+                <td>@islem.BirimFiyat.ToString("C")</td>
+                <td>@islem.Adet</td>
+                <td>@islem.AraToplam.ToString("C")</td>
+                <td></td>
+            </tr>
+        }
+    <tfoot class="fw-bold">
+        <tr>
+            <td colspan="3" class="text-end">GENEL TOPLAM:</td>
+            <td>@islemler.Sum(i => i.AraToplam).ToString("C")</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="text-end">ÖDEME ŞEKLİ:</td>
+            <td>@Model.OdemeSekli</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="text-end">ALINAN ÜCRET:</td>
+            <td>@Model.AlinanUcret</td>
+        </tr>
+        <tr>
+            <td colspan="5">AÇIKLAMA: @Model.Aciklama</td>
+        </tr>
+        
+    </tfoot>
+    </table>
+
+}

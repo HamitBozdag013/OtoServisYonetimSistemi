@@ -1,0 +1,177 @@
+﻿@using OtoServisYonetimSistemi.Entities.Servis
+@model IEnumerable<OtoServisYonetimSistemi.Entities.Servis.IsEmri>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (ViewBag.AcikIsEmirleri != null)
+{
+    var acik = (List<IsEmri>)ViewBag.AcikIsEmirleri;
+    if (acik.Count > 0)
+    {
+        <h5 style="color:red;">Bu Müşteriye ait @acik.Count adet açık iş emri bulunmaktadır!!!</h5>
+        <table class="table table-sm table-responsive mt-3 mb-3">
+            <thead>
+                <tr>
+                    <td>Marka</td>
+                    <td>Model</td>
+                    <td>Plaka</td>
+                    <td>Şase No</td>
+                    <td>Müşteri</td>
+                    <td>Telefon</td>
+                    <td>Geliş Sebebi</td>
+                    <td>Geliş Tarihi</td>
+                    <td></td>
+                </tr>
+            </thead>
+            @foreach (var item in acik)
+            {
+                <tr>
+                    <td>@item.Model.Marka.MarkaAd</td>
+                    <td>@item.Model.ModelAd</td>
+                    <td>@item.Plaka</td>
+                    <td>@item.SaseNo</td>
+                    <td>@item.Musteri.AdSoyad</td>
+                    <td>@item.Musteri.Telefon</td>
+                    <td>@item.GelisSebebi</td>
+                    <td>@item.GelisTarihi.ToShortDateString()</td>
+                    <td></td>
+
+                </tr>
+            }
+        </table>
+        <hr />
+    }
+}
+
+@using (Html.BeginForm("IsEmriKaydet", "IsEmri"))
+{
+    <input type="hidden" name="MusteriId" value="@ViewBag.MusteriId" />
+
+    <div class="row">
+        <div class="col-md-4">
+            Marka
+            @Html.DropDownList("Markalar", new SelectList(ViewBag.Marka, "Id", "MarkaAd"), "Marka Seçiniz", new { @class = "form-control", required = "required", onchange = "ModelDoldur()" })
+        </div>
+        <div class="col-md-4">
+            Model
+            <select name="ModelId" id="ModelId" class="form-control">
+            </select>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-4">
+            Plaka
+            <input type="text" name="Plaka" required class="form-control" />
+        </div>
+        <div class="col-md-4">
+            Şase No
+            <input type="text" name="SaseNo" required class="form-control" />
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-4">
+            Araç KM
+            <input type="text" name="AracKm" required class="form-control" />
+        </div>
+        <div class="col-md-4">
+            Model Yılı
+            <input type="text" name="ModelYil" required class="form-control" />
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-4">
+            Yakıt Türü
+            <select name="YakitTuru" class="form-control">
+                <option>Benzin</option>
+                <option>Dizel</option>
+                <option>LPG</option>
+                <option>Hybrid</option>
+                <option>Elektrik</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            Geliş Tarihi
+            <input type="date" name="GelisTarihi" required class="form-control" />
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-8">
+            Geliş Sebebi
+            <textarea class="form-control" required name="GelisSebebi"></textarea>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-8">
+            <input type="submit" class="btn btn-primary float-end mt-2" value="Kaydet" />
+        </div>
+    </div>
+}
+
+@if (Model.Any())
+{
+    <hr />
+    <h5 style="color:red;">Bu Müşteriye Ait Geçmiş İş Emirleri</h5>
+    <table class="table table-sm table-responsive mt-3 mb-3">
+        <thead>
+            <tr>
+                <th>Marka</th>
+                <th>Model</th>
+                <th>Plaka</th>
+                <th>Şase No</th>
+                <th>Müşteri</th>
+                <th>Telefon</th>
+                <th>Geliş Sebebi</th>
+                <th>Geliş Tarihi</th>
+                <th></th>
+
+            </tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Model.Marka.MarkaAd</td>
+                <td>@item.Model.ModelAd</td>
+                <td>@item.Plaka</td>
+                <td>@item.SaseNo</td>
+                <td>@item.Musteri.AdSoyad</td>
+                <td>@item.Musteri.Telefon</td>
+                <td>@item.GelisSebebi</td>
+                <td>@item.GelisTarihi.ToShortDateString()</td>
+                <td>
+                    @Html.ActionLink("İş Emri Oluştur", "IsEmriOlusturSablon", new { isEmriId = item.Id }, new { @class = "btn btn-sm btn-success" })
+                    @Html.ActionLink("Detay", "Detay", new { isEmriId = item.Id }, new { @class = "btn btn-sm btn-info" })
+                </td>
+
+            </tr>
+        }
+    </table>
+
+}
+
+<script>
+    function ModelDoldur() {
+        var _markaId = $('#Markalar').val();
+        if ($('#Markalar').val() == "") {
+            $('#ModelId').html("");
+            $('#ModelId').append($('<option></option>').val("").html("Model Seçiniz"));
+        }
+        else {
+            $.ajax({
+                url: '/MarkaModel/ModelDoldur',
+                type: 'GET',
+                dataType: 'JSON',
+                data: { markaId: _markaId },
+                success: function (modeller) {
+                    $('#ModelId').html("");
+                    $('#ModelId').append($('<option></option>').val("").html("Model Seçiniz"));
+                    $.each(modeller, function (i, model) {
+                        $('#ModelId').append($('<option></option>').val(model.Id).html(model.ModelAd));
+                    });
+                }
+            });
+        }
+    }
+</script>
+
+

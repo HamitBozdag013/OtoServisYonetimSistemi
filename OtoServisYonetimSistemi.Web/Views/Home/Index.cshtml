@@ -1,0 +1,156 @@
+﻿@using OtoServisYonetimSistemi.Entities.Web;
+@using System.Text.RegularExpressions;
+@using OtoServisYonetimSistemi.Web.Custom;
+@{
+    ViewBag.Title = "HB Oto Servis";
+}
+
+@if (ViewBag.Slider != null)
+{
+    var sliders = (List<Slider>)ViewBag.Slider;
+    sliders.Reverse();
+    int ilkSlideControl = 0;
+
+
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            @for (int i = 0; i < sliders.Count; i++)
+            {
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="@i" class="active" aria-current="true" aria-label="Slide @i"></button>
+            }
+        </div>
+        <div class="carousel-inner">
+            @foreach (var slider in sliders)
+            {
+                string _active = "";
+                if (ilkSlideControl == 0)
+                {
+                    _active = "active";
+                }
+                <div class="carousel-item @_active">
+                    <img src="@slider.ResimYolu" class="d-block w-100" alt="@slider.Baslik">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>@slider.Baslik</h5>
+                        <p>@slider.Tanimlama</p>
+                    </div>
+                </div>
+                ilkSlideControl++;
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+}
+
+@if (ViewBag.Kampanya != null)
+{
+    var kampanya = (Kampanya)ViewBag.Kampanya;
+    if (kampanya.Icerik != null)
+    {
+        <div id="Kampanya" class="row mt-3 mb-3">
+            <h2 class="text-center">Kampanya / Duyurular</h2>
+            <div class="col">
+                @Html.Raw(kampanya.Icerik)
+            </div>
+        </div>
+        <hr />
+    }
+}
+
+@if (ViewBag.Uygulama != null)
+{
+    var uygulamalar = (List<Uygulama>)ViewBag.Uygulama;
+    if (uygulamalar.Count != 0)
+    {
+
+        <div id="Uygulamalar" class="row mt-3">
+            <h2 class="text-center mb-4">UYGULAMALARIMIZ</h2>
+            @foreach (var uygulama in uygulamalar)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <img src="@uygulama.ResimYolu" alt="@uygulama.Baslik" />
+                        <div class="card-body">
+                            <div class="card-title">
+                                <h5 class="text-center">@uygulama.Baslik</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <hr />
+    }
+
+}
+
+@if (ViewBag.Hakkimizda != null)
+{
+    var hakkimizda = (Hakkimizda)ViewBag.Hakkimizda;
+    if (hakkimizda.Icerik != null)
+    {
+        <div id="Hakkimizda" class="row mt-3 mb-3">
+            <h2 class="text-center">Şirketimiz Hakkında</h2>
+            <div class="col-md-4">
+                <img class="img-fluid" src="@hakkimizda.ResimYolu" alt="" />
+            </div>
+            <div class="col-md-8">
+                @Html.Raw(hakkimizda.Icerik)
+            </div>
+        </div>
+        <hr />
+    }
+}
+
+@if (ViewBag.Blog != null)
+{
+
+    var blogs = (List<Blog>)ViewBag.Blog;
+    blogs.Reverse();
+
+    if (blogs.Count != 0)
+    {
+        <div id="Blog" class="row mt-3">
+            <h2 class="text-center">BLOG</h2>
+            @foreach (var blog in blogs)
+            {
+                <div class="col-md-6 mt-3">
+                    <h5>
+                        @* Alt satırlardaki 2 kod aynı işi yapıyor. Birisi <a> tagları ikincisi Html helper kullanılarak yapılmıştır. *@
+                        @*<a href="/@Ozel.LinkDuzenle(blog.Baslik)/@blog.Id">@blog.Baslik</a>*@
+                        @Html.ActionLink(blog.Baslik, "BlogDetay", new { baslik = Ozel.LinkDuzenle(blog.Baslik), id = blog.Id }, new { @class = "text-dark text-decoration-none" })
+                    </h5>
+
+                    @{
+                        string kisaltma = Regex.Replace(blog.Icerik, "<.*?>", string.Empty);
+
+                        if (kisaltma.Length > 200)
+                        {
+                            kisaltma = kisaltma.Substring(0, 200) + "...";
+                        }
+                        @kisaltma
+                    }
+                </div>
+            }
+        </div>
+        <hr />
+    }
+}
+
+@if (ViewBag.Harita != null)
+{
+    var iletisim = (Iletisim)ViewBag.Harita;
+    <div id="Iletisim" class="row">
+        <div class="col-12">
+            <span>@Html.Raw(iletisim.Harita)</span>
+        </div>
+    </div>
+    <hr />
+}
+

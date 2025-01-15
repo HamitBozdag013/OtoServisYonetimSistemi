@@ -1,0 +1,81 @@
+﻿@model IEnumerable<OtoServisYonetimSistemi.Entities.Servis.Marka>
+@{
+    ViewBag.Title = "Markalar";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@using (Html.BeginForm("MarkaKaydet", "MarkaModel"))
+{
+    <div class="row">
+        <div class="col-4">
+            Marka Adını Yazınız
+            <input type="text" required name="MarkaAd" class="form-control" />
+        </div>
+        <div class="col">
+            <br />
+            <input type="submit" class="btn btn-primary" value="Kaydet" />
+        </div>
+    </div>
+}
+<hr />
+<table class="table table-sm table-responsive-sm">
+    <thead>
+        <tr>
+            <th>Marka Adı</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    @foreach (var marka in Model)
+    {
+        <tr>
+            <td>@marka.MarkaAd</td>
+            <td>
+                <div class="btn-group float-end">
+                    @Html.ActionLink("Modeller", "ModelListesi", new { markaId = marka.Id }, new { @class = "btn btn-sm btn-warning" })
+                    <button type="button" onclick="silmodal(this)" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-markaad="@marka.MarkaAd" data-id="@marka.Id" data-bs-target="#silModal">
+                        Sil
+                    </button>
+                </div>
+            </td>
+
+        </tr>
+    }
+</table>
+
+
+<!-- Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Marka Silme İşlemi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <strong id="silMarkaAd"></strong> markasını silmek istiyor musunuz?
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("MarkaSil", "MarkaModel", FormMethod.Post))
+                {
+                    <input type="hidden" id="hiddenId" name="id" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        function silmodal(btn) {
+            var xid = $(btn).data('id');
+            var markaAd = $(btn).data('markaad');
+            $('#hiddenId').val(xid);
+            $('#silMarkaAd').text(markaAd);
+        }
+    </script>
+}
+

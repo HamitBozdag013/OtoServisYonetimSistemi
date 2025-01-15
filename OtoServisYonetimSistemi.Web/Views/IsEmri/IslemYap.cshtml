@@ -1,0 +1,227 @@
+﻿@model IEnumerable<OtoServisYonetimSistemi.Entities.Servis.Islem>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@using (Html.BeginForm("IslemKaydet", "IsEmri"))
+{
+    <input type="hidden" name="IsEmriId" value="@ViewBag.IsEmriId" />
+
+    <div class="row">
+        <div class="col-md-3">
+            Bakım Grubu
+            @Html.DropDownList("DrpDwnListBakimGrubu", new SelectList(ViewBag.BakimGrup, "Id", "BakimGrupAdi"), "Bakım Grubu Seçiniz", new { @class = "form-control form-control-sm", required = "required", onchange = "BakimDoldur()" })
+        </div>
+        <div class="col-md-3">
+            Bakım Türü
+            <select name="BakimId" id="BakimId" required class="form-control form-control-sm">
+            </select>
+            <input type="hidden" name="islemAdi" id="islemAd" />
+        </div>
+        <div class="col-md-2">
+            Birim Fiyat
+            <div class="input-group input-group-sm">
+                <span class="input-group-text">&#8378;</span>
+                <input type="number" required id="bakimBirimFiyat" step="any" class="form-control form-control-sm text-center" onclick="this.select()" onchange="BakimMaaliyetHesapla()" value="0" />
+                <input type="hidden" id="hdbakimBirimFiyat" name="BirimFiyat" />
+            </div>
+        </div>
+        <div class="col-md-1">
+            Adet
+            <input type="number" id="bakimAdet" name="Adet" required class="form-control text-center" onclick="this.select()" onchange="BakimMaaliyetHesapla()" value="1" />
+        </div>
+        <div class="col-md-2">
+            Toplam
+            <div class="input-group input-group-sm">
+                <span class="input-group-text">&#8378;</span>
+                <input type="text" id="bakimAraToplam" name="AraToplam" required class="form-control form-control-sm text-center" readonly value="0" />
+            </div>
+        </div>
+        <div class="col-md-1">
+            <br />
+            <input type="submit" value="Ekle" class="btn btn-sm btn-success" />
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("IslemKaydet", "IsEmri"))
+{
+    <input type="hidden" name="IsEmriId" value="@ViewBag.IsEmriId" />
+    <div class="row mt-4">
+        <div class="col-md-6">
+            Diğer İşlem
+            <input type="text" name="islemAdi" required class="form-control form-control-sm" />
+        </div>
+        <div class="col-md-2">
+            Birim Fiyat
+            <div class="input-group input-group-sm">
+                <span class="input-group-text">&#8378;</span>
+                <input type="number" id="digerBakimBirimFiyat" step="any" required class="form-control form-control-sm text-center" onclick="this.select()" onchange="DigerBakimMaaliyetHesapla()" value="0" />
+                <input type="hidden" id="hddigerbakimBirimFiyat" name="BirimFiyat" />
+            </div>
+        </div>
+        <div class="col-md-1">
+            Adet
+            <input type="number" id="digerBakimAdet" name="Adet" required class="form-control form-control-sm text-center" onclick="this.select()" onchange="DigerBakimMaaliyetHesapla()" value="1" />
+        </div>
+        <div class="col-md-2">
+            Toplam
+            <div class="input-group input-group-sm">
+                <span class="input-group-text">&#8378;</span>
+                <input type="text" id="digerBakimAraToplam" name="AraToplam" required class="form-control form-control-sm text-center" readonly value="0" />
+            </div>
+        </div>
+        <div class="col-md-1">
+            <br />
+            <input type="submit" value="Ekle" class="btn btn-sm btn-success" />
+        </div>
+    </div>
+}
+<hr class="mt-4 mb-4" />
+<table class="table table-sm table-responsive">
+    <thead>
+        <tr class="table-danger">
+            <th>Yapılan İşlem</th>
+            <th>Birim Fiyat</th>
+            <th>Adet</th>
+            <th>Toplam</th>
+            <th></th>
+        </tr>
+    </thead>
+    @foreach (var islem in Model)
+    {
+        <tr class="table-light">
+            <td>@islem.IslemAdi</td>
+            <td>@islem.BirimFiyat.ToString("C")</td>
+            <td>@islem.Adet</td>
+            <td>@islem.AraToplam.ToString("C")</td>
+            <td>
+                <button type="button" onclick="silmodal(this)" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-islemad="@islem.IslemAdi" data-id="@islem.Id" data-bs-target="#silModal">
+                    Sil
+                </button>
+            </td>
+        </tr>
+    }
+    <tfoot>
+        <tr class="table-secondary fw-bold">
+            <td></td>
+            <td></td>
+            <td class="text-end">
+                GENEL TOPLAM:
+            </td>
+            <td>@Model.Sum(i => i.AraToplam).ToString("C")</td>
+            <td></td>
+        </tr>
+    </tfoot>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">İşlem Silme</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <strong id="silIslemAd"></strong> işlemini silmek istiyor musunuz?
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("IslemSil", "IsEmri", FormMethod.Post))
+                {
+                    <input type="hidden" id="hiddenId" name="id" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("KaydetveKapat", "IsEmri"))
+{
+    <input type="hidden" name="IsEmriId" value="@ViewBag.IsEmriId" />
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <h6 class="text-center text-dark text-decoration-underline"> ÖDEME VE İŞLEM SONLANDIRMA</h6>
+            <select name="OdemeSekli" class="form-control" required>
+                <option value="">Ödeme Şekli</option>
+                <option value="Nakit">Nakit</option>
+                <option value="Kart">Kart</option>
+            </select>
+            <textarea name="Aciklama" class="form-control mt-2" placeholder="Not ekleyebilirsiniz..."></textarea>
+            <div class="input-group mt-2">
+                <span class="input-group-text">&#8378;</span>
+                <input type="text" name="AlinanUcret" required class="form-control text-center fw-bold fs-3" onclick="this.select()" value="0" />
+            </div>
+            <input type="submit" class="btn btn-primary mt-2 float-end" value="Kaydet ve İşlem Kapat" />
+        </div>
+    </div>
+}
+
+
+<script>
+    function BakimDoldur() {
+        var _bakimId = $('#DrpDwnListBakimGrubu').val();
+        if ($('#DrpDwnListBakimGrubu').val() == "") {
+            $('#BakimId').html("");
+            $('#BakimId').append($('<option></option>').val("").html("Bakım Türü Seçiniz"));
+        }
+        else {
+            $.ajax({
+                url: '/BakimGrup/BakimDoldur',
+                type: 'GET',
+                dataType: 'JSON',
+                data: { bakimGrupId: _bakimId },
+                success: function (bakimlar) {
+                    $('#BakimId').html("");
+                    $('#BakimId').append($('<option></option>').val("").html("Bakım Türü Seçiniz"));
+                    $.each(bakimlar, function (i, bakim) {
+                        $('#BakimId').append($('<option></option>').val(bakim.Id).html(bakim.BakimAdi));
+                    });
+                }
+            });
+        }
+    }
+    function BakimMaaliyetHesapla() {
+        var bakimBirimFiyat = $('#bakimBirimFiyat').val();
+        var bakimAdet = $('#bakimAdet').val();
+        if (bakimBirimFiyat.length === 0 || bakimAdet.length === 0) {
+            $('#bakimAraToplam').val(0);
+        }
+        else {
+            var bakimAraToplam = bakimBirimFiyat * bakimAdet;
+            $('#hdbakimBirimFiyat').val(bakimBirimFiyat.replace('.', ','));
+            $('#bakimAraToplam').val(bakimAraToplam.toFixed(2).replace('.', ','));
+        }
+    }
+    function DigerBakimMaaliyetHesapla() {
+        var digerBakimBirimFiyat = $('#digerBakimBirimFiyat').val();
+        var digerBakimAdet = $('#digerBakimAdet').val();
+        if (digerBakimBirimFiyat.length === 0 || digerBakimAdet.length === 0) {
+            $('#digerBakimAraToplam').val(0);
+        }
+        else {
+            var digerBakimAraToplam = digerBakimBirimFiyat * digerBakimAdet;
+            $('#hddigerbakimBirimFiyat').val(digerBakimBirimFiyat.replace('.', ','));
+            $('#digerBakimAraToplam').val(digerBakimAraToplam.toFixed(2).replace('.', ','));
+        }
+    }
+    function silmodal(btn) {
+        var xid = $(btn).data('id');
+        var islemAd = $(btn).data('islemad');
+        $('#hiddenId').val(xid);
+        $('#silIslemAd').text(islemAd);
+    }
+</script>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#BakimId').on("change", function () {
+                $('#islemAd').val($(this).find("option:selected").text());
+            });
+        });
+    </script>
+}

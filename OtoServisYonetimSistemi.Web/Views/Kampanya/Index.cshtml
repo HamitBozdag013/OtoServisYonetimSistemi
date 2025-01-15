@@ -1,0 +1,19 @@
+﻿@model OtoServisYonetimSistemi.Entities.Web.Kampanya
+@{
+    ViewBag.Title = "Kampanya / Duyurular";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@using (Html.BeginForm("KampanyaKaydet", "Kampanya"))
+{
+    <div class="row">
+        <div class="col">
+            @Html.EditorFor(m => m.Icerik, new { htmlAtributes = new { @class = "form-control" } })
+            <input type="submit" class="btn btn-primary mt-2" value="Kaydet" />
+        </div>
+    </div>
+}
+
+
+
+

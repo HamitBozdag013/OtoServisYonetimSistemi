@@ -1,0 +1,27 @@
+﻿@model OtoServisYonetimSistemi.Entities.Web.Hakkimizda
+@{
+    ViewBag.Title = "Hakkımızda";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@using (Html.BeginForm("HakkimizdaKaydet", "Hakkimizda", FormMethod.Post, new{ enctype ="multipart/form-data" }))
+{
+    <div class="row">
+        <div class="col">
+            @Html.EditorFor(m => m.Icerik, new { htmlAtributes = new { @class = "form-control" } })
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-md-3">
+            <h6>Resim Seçiniz</h6>
+            <input type="file" required name="ResimYolu" class="form-control" />
+        </div>
+        <div class="col-md-1">
+            <h6></h6><br />
+            <input type="submit" class="btn btn-primary float-start" value="Kaydet" />
+        </div>
+    </div>
+}
+
+
+
